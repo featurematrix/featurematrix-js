@@ -2,7 +2,7 @@
     "name": "featurematrix-js",
     "version": "0.0.1",
     "description": "FeatureMatrix JavaScript Client",
-    "main": "index.js",
+    "main": "dist/index.js",
     "scripts": {
         "build": "tsc",
         "build:watch": "tsc -w"
@@ -13,6 +13,9 @@
     "author": "Nairi Narinyan",
     "license": "ISC",
     "devDependencies": {
-        "typescript": "^3.4.5"
+        "awesome-typescript-loader": "^5.2.1",
+        "typescript": "^3.4.5",
+        "webpack": "^4.32.2",
+        "webpack-cli": "^3.3.2"
     }
 }

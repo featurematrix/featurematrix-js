@@ -22,12 +22,13 @@ const findIdxById = <T extends { id: string }>(id: string, items: T[]) => {
 const evaluate = (percentage: number) => Math.random() * 100 < percentage;
 
 const reEvaluate = (feature: Feature, storedFeature: StoredFeature): boolean => {
-    const originalPercentage = storedFeature.percentage;
     const newPercentage = feature.percentage;
 
     if (!storedFeature) {
         return evaluate(newPercentage);
     }
+
+    const originalPercentage = storedFeature.percentage;
 
     const change = newPercentage - originalPercentage;
     const percentageIncreased = change > 0;
@@ -107,5 +108,9 @@ export class FeatureStorage {
         }
 
         return feature.isOn;
+    }
+
+    getFeatures() {
+        return this.features.map(f => f.key);
     }
 }

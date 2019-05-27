@@ -21,11 +21,16 @@ interface UpdateData {
     feature: Feature;
 }
 
-class FeatureMatrix {
+export class FeatureMatrix {
     private featureStorage = new FeatureStorage();
     private eventEmitter = new EventEmitter();
+    private initialized = false;
 
     constructor(options: Options) {
+        if (!options || !options.appKey || !options.envKey) {
+            throw new Error('appKey and envKey are required');
+        }
+
         this.init(options);
     }
 
@@ -46,11 +51,29 @@ class FeatureMatrix {
                     return this.processFeatureUpdate(parsedMessage as UpdateData);
             }
         });
+
+        ws.addEventListener('error', (evt) => {
+            console.log('error', evt);
+        });
+
+        ws.addEventListener('open', evt => {
+            console.log('open', evt);
+        });
+
+        ws.addEventListener('close', evt => {
+            try {
+                const reason = JSON.parse(evt.reason);
+                console.error(reason);
+            } catch (err) {
+                console.error('Socket closed unexpectedly');
+            }
+        });
     }
 
     private processInitialFeatureData(initialData: InitialData) {
         const features = initialData.features;
         this.featureStorage.updateFeatures(features);
+        this.initialized = true;
         this.eventEmitter.emit('ready');
     }
 
@@ -69,6 +92,16 @@ class FeatureMatrix {
     }
 
     getFeatureState(featureKey: string) {
+        if (!this.initialized) {
+            throw new Error('Uninitialized');
+        }
         return this.featureStorage.getFeatureState(featureKey);
+    }
+
+    getFeatures() {
+        if (!this.initialized) {
+            throw new Error('Uninitialized');
+        }
+        return this.featureStorage.getFeatures();
     }
 }
