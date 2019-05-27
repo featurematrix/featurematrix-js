@@ -2,10 +2,9 @@
     "name": "featurematrix-js",
     "version": "0.0.1",
     "description": "FeatureMatrix JavaScript Client",
-    "main": "dist/index.js",
+    "main": "dist/featurematrix.js",
     "scripts": {
-        "build": "tsc",
-        "build:watch": "tsc -w"
+        "build": "webpack"
     },
     "keywords": [
         "featurematrix"

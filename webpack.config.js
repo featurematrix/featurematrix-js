@@ -6,7 +6,9 @@ module.exports = {
         filename: 'featurematrix.js',
         path: path.resolve(__dirname, 'dist'),
         library: 'FeatureMatrix',
-        libraryTarget: 'umd'
+        libraryTarget: 'umd',
+        umdNamedDefine: true,
+        globalObject: 'this'
     },
     module: {
         rules: [

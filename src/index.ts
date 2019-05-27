@@ -24,7 +24,8 @@ interface UpdateData {
 export class FeatureMatrix {
     private featureStorage = new FeatureStorage();
     private eventEmitter = new EventEmitter();
-    private initialized = false;
+    private fmInstance: FeatureMatrix;
+    initialized = false;
 
     constructor(options: Options) {
         if (!options || !options.appKey || !options.envKey) {
@@ -32,6 +33,10 @@ export class FeatureMatrix {
         }
 
         this.init(options);
+    }
+
+    initialize(options: Options) {
+        this.fmInstance = new FeatureMatrix(options);
     }
 
     private init(options: Options) {
@@ -80,15 +85,18 @@ export class FeatureMatrix {
     private processFeatureUpdate(updateData: UpdateData) {
         const { feature } = updateData;
         this.featureStorage.updateFeature(feature);
-        this.eventEmitter.emit('update', feature);
+        const { name, key, isOn } = this.featureStorage.getFeature(feature.key);
+        this.eventEmitter.emit('update', { name, key, isOn });
     }
 
     on(eventType: EventType, callback: (...args: any[]) => void) {
-        this.eventEmitter.register({
+        const unsubsribe = this.eventEmitter.register({
             eventType,
             id: Date.now(),
             callback
         });
+
+        return { unsubsribe };
     }
 
     getFeatureState(featureKey: string) {

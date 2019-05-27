@@ -99,6 +99,10 @@ export class FeatureStorage {
         this.features = features;
     }
 
+    getFeature(featureKey: string) {
+        return this.features.find(f => f.key === featureKey);
+    }
+
     getFeatureState(featureKey: string) {
         const feature = this.features.find(f => f.key === featureKey);
 

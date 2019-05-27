@@ -13,6 +13,12 @@ export class EventEmitter {
 
     register(listener: Listener) {
         this.listeners.push(listener);
+        return () => this.unregister(listener.id);
+    }
+
+    unregister(id: number) {
+        const listenerIdx = this.listeners.findIndex(listener => listener.id === id);
+        ~listenerIdx && this.listeners.splice(listenerIdx, 1);
     }
 
     emit(eventType: EventType, data?: any) {
