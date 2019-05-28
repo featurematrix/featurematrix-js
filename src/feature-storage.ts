@@ -1,3 +1,5 @@
+import { findById, reEvaluate, findIdxById } from './utils';
+
 export interface Feature {
     id: string;
     name: string;
@@ -9,73 +11,30 @@ export interface StoredFeature extends Feature {
     isOn: boolean;
 }
 
-const storageKey = '__fm_features__';
-
-const findById = <T extends { id: string }>(id: string, items: T[]) => {
-    return items.find(item => item.id === id);
-};
-
-const findIdxById = <T extends { id: string }>(id: string, items: T[]) => {
-    return items.findIndex(item => item.id === id);
-};
-
-const evaluate = (percentage: number) => Math.random() * 100 < percentage;
-
-const reEvaluate = (feature: Feature, storedFeature: StoredFeature): boolean => {
-    const newPercentage = feature.percentage;
-
-    if (!storedFeature) {
-        return evaluate(newPercentage);
-    }
-
-    const originalPercentage = storedFeature.percentage;
-
-    const change = newPercentage - originalPercentage;
-    const percentageIncreased = change > 0;
-    const isOn = storedFeature.isOn;
-    
-    if (!change) {
-        return storedFeature.isOn;
-    }
-
-    if (!percentageIncreased) {
-        return evaluate(newPercentage);
-    }
-
-    if (isOn && percentageIncreased) {
-        return storedFeature.isOn;
-    }
-
-    if (!isOn && percentageIncreased) {
-        const diff = newPercentage - originalPercentage;
-        const remainingSamplePercentage = 100 - originalPercentage;
-        const samplePercentage = diff / (remainingSamplePercentage / 100);
-        return evaluate(samplePercentage);
-    }
-};
-
-const createStorableFeature = (feature: Feature, storedFeatures: StoredFeature[]): StoredFeature => {
-    const storedFeature = findById(feature.id, storedFeatures);
-    const isOn = reEvaluate(feature, storedFeature);
-
-    return { ...feature, isOn };
-};
+export interface Storage {
+    persistFeatures: (features: StoredFeature[]) => void;
+    getFeatures(): StoredFeature[];
+}
 
 export class FeatureStorage {
     private features: StoredFeature[];
 
+    constructor(
+        private storage: Storage
+    ) {}
+
     updateFeatures(features: Feature[]) {
-        const storedFeatures = this.getStoredFeatures();
+        const storedFeatures = this.storage.getFeatures();
         const featuresToStore: StoredFeature[] = features.map(feature => {
-            return createStorableFeature(feature, storedFeatures);
+            return this.createStorableFeature(feature, storedFeatures);
         });
 
         this.persist(featuresToStore);
     }
 
     updateFeature(feature: Feature) {
-        const storedFeatures = this.getStoredFeatures();
-        const featureToStore = createStorableFeature(feature, storedFeatures);
+        const storedFeatures = this.storage.getFeatures();
+        const featureToStore = this.createStorableFeature(feature, storedFeatures);
 
         const featureIdx = findIdxById(feature.id, storedFeatures);
         let featuresToStore = storedFeatures;
@@ -87,16 +46,6 @@ export class FeatureStorage {
         }
 
         this.persist(featuresToStore);
-    }
-
-    private getStoredFeatures(): StoredFeature[] {
-        const storedFeatures = localStorage.getItem(storageKey);
-        return JSON.parse(storedFeatures) as StoredFeature[] || [];
-    }
-
-    private persist(features: StoredFeature[]) {
-        localStorage.setItem(storageKey, JSON.stringify(features));
-        this.features = features;
     }
 
     getFeature(featureKey: string) {
@@ -116,5 +65,17 @@ export class FeatureStorage {
 
     getFeatures() {
         return this.features.map(f => f.key);
+    }
+
+    private createStorableFeature (feature: Feature, storedFeatures: StoredFeature[]): StoredFeature {
+        const storedFeature = findById(feature.id, storedFeatures);
+        const isOn = reEvaluate(feature, storedFeature);
+
+        return { ...feature, isOn };
+    };
+
+    private persist(features: StoredFeature[]) {
+        this.storage.persistFeatures(features);
+        this.features = features;
     }
 }
