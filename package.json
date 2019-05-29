@@ -2,7 +2,7 @@
     "name": "featurematrix",
     "version": "0.0.1",
     "description": "FeatureMatrix JavaScript Client",
-    "main": "dist/featurematrix.js",
+    "main": "featurematrix.js",
     "scripts": {
         "build": "webpack"
     },

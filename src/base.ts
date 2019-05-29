@@ -1,5 +1,5 @@
 import { FeatureStorage, Feature } from './feature-storage';
-import { EventEmitter, EventType } from './event-emitter';
+import { EventEmitter, EventType, Subscription } from './event-emitter';
 
 export interface Options {
     appKey: string;
@@ -53,14 +53,12 @@ export class FeatureMatrixBase {
         this.eventEmitter.emit('update', { name, key, isOn });
     }
 
-    on(eventType: EventType, callback: (...args: any[]) => void) {
-        const unsubsribe = this.eventEmitter.register({
+    on(eventType: EventType, callback: (...args: any[]) => void): Subscription {
+        return this.eventEmitter.register({
             eventType,
             id: Date.now(),
             callback
         });
-
-        return { unsubsribe };
     }
 
     getFeatureState(featureKey: string) {

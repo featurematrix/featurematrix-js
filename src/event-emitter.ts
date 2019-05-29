@@ -8,12 +8,18 @@ interface Listener {
     callback: (...args: any[]) => any;
 }
 
+export interface Subscription {
+    unsubscribe: () => void;
+}
+
 export class EventEmitter {
     private listeners: Listener[] = [];
 
-    register(listener: Listener) {
+    register(listener: Listener): Subscription {
         this.listeners.push(listener);
-        return () => this.unregister(listener.id);
+        return {
+            unsubscribe: () => this.unregister(listener.id)
+        };
     }
 
     unregister(id: number) {

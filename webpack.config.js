@@ -4,7 +4,7 @@ module.exports = {
     entry: './src/index.ts',
     output: {
         filename: 'featurematrix.js',
-        path: path.resolve(__dirname, 'dist'),
+        path: path.resolve(__dirname),
         library: 'FeatureMatrix',
         libraryTarget: 'umd',
         umdNamedDefine: true,
