@@ -3,18 +3,16 @@ import { FeatureStorage } from './feature-storage';
 import { LocalStorage } from './localstorage';
 
 export class FeatureMatrixBrowser extends FeatureMatrixBase {
-    constructor(options: Options) {
+    constructor() {
         super();
         this.featureStorage = new FeatureStorage(new LocalStorage());
-        
+    }
+
+    init(options: Options) {
         if (!options || !options.appKey || !options.envKey) {
             throw new Error('appKey and envKey are required');
         }
 
-        this.init(options);
-    }
-
-    private init(options: Options) {
         const { appKey, envKey } = options;
         const ws = new WebSocket(`ws://localhost:8000/live?envKey=${envKey}&appKey=${appKey}`);
         this.initListeners(ws);
