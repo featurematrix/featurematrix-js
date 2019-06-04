@@ -28,7 +28,16 @@ export interface UpdateData {
 export class FeatureMatrixBase {
     protected featureStorage: FeatureStorage;
     private eventEmitter = new EventEmitter();
+    private reconnectInterval;
+
     initialized = false;
+
+    protected connect() {
+    };
+
+    onConnect() {
+        clearInterval(this.reconnectInterval);
+    }
 
     onMessage(message: Message) {
         switch (message.type) {
@@ -37,6 +46,13 @@ export class FeatureMatrixBase {
             case MessageType.FEATURE_UPDATED:
                 return this.processFeatureUpdate(message as UpdateData);
         }
+    }
+
+    onClose() {
+        this.reconnectInterval = setInterval(() => {
+            clearInterval(this.reconnectInterval);
+            this.connect();
+        }, 1000);
     }
 
     private processInitialFeatureData(initialData: InitialData) {
