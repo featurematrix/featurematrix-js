@@ -70,6 +70,10 @@ export class FeatureMatrixBase {
     }
 
     on(eventType: EventType, callback: (...args: any[]) => void): Subscription {
+        if (eventType === 'ready' && this.initialized) {
+            callback();
+        }
+
         return this.eventEmitter.register({
             eventType,
             id: Date.now(),

@@ -1,5 +1,3 @@
-
-
 export type EventType = 'ready' | 'update';
 
 interface Listener {

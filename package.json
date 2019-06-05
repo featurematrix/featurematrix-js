@@ -1,6 +1,6 @@
 {
-    "name": "featurematrix",
-    "version": "0.0.1",
+    "name": "featurematrix-js",
+    "version": "0.0.2",
     "description": "FeatureMatrix JavaScript Client",
     "main": "featurematrix.js",
     "scripts": {
