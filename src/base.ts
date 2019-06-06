@@ -52,7 +52,7 @@ export class FeatureMatrixBase {
         this.reconnectInterval = setInterval(() => {
             clearInterval(this.reconnectInterval);
             this.connect();
-        }, 1000);
+        }, 10000);
     }
 
     private processInitialFeatureData(initialData: InitialData) {
