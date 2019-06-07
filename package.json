@@ -1,16 +1,24 @@
 {
     "name": "featurematrix-js",
-    "version": "0.0.3",
+    "version": "0.0.4",
     "description": "FeatureMatrix JavaScript Client",
     "main": "featurematrix.js",
     "scripts": {
         "build": "webpack"
     },
     "keywords": [
-        "featurematrix"
+        "featurematrix", "feature", "toggle"
     ],
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/featurematrix/featurematrix-js.git"
+    },
+    "bugs": {
+        "url": "https://github.com/featurematrix/featurematrix-js/issues"
+    },
+    "homepage": "https://featurematrix.io",
     "author": "Nairi Narinyan",
-    "license": "MIT",
+    "license": "ISC",
     "devDependencies": {
         "awesome-typescript-loader": "^5.2.1",
         "typescript": "^3.4.5",
