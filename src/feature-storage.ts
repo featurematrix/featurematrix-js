@@ -14,10 +14,11 @@ export interface StoredFeature extends Feature {
 export interface Storage {
     persistFeatures: (features: StoredFeature[]) => void;
     getFeatures(): StoredFeature[];
+    getFeature(featureKey: string): StoredFeature;
 }
 
 export class FeatureStorage {
-    private features: StoredFeature[];
+    private features: StoredFeature[] = [];
 
     constructor(
         private storage: Storage
@@ -52,8 +53,8 @@ export class FeatureStorage {
         return this.features.find(f => f.key === featureKey);
     }
 
-    getFeatureState(featureKey: string) {
-        const feature = this.features.find(f => f.key === featureKey);
+    getFeatureState(featureKey: string, persisted?: boolean) {
+        const feature = persisted ? this.storage.getFeature(featureKey) : this.getFeature(featureKey);
 
         if (!feature) {
             console.warn('Invalid feature key ' + featureKey);

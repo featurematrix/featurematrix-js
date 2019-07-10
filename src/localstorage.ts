@@ -11,4 +11,9 @@ export class LocalStorage implements Storage {
         const storedFeatures = localStorage.getItem(storageKey);
         return JSON.parse(storedFeatures) as StoredFeature[] || [];
     }
+
+    getFeature(featureKey: string): StoredFeature {
+        const storedFeatures = this.getFeatures();
+        return storedFeatures.find(f => f.key === featureKey);
+    }
 }

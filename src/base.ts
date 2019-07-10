@@ -84,9 +84,9 @@ export class FeatureMatrixBase {
     getFeatureState(featureKey: string) {
         if (!this.initialized) {
             console.warn('Uninitialized');
-            return null;
         }
-        return this.featureStorage.getFeatureState(featureKey);
+
+        return this.featureStorage.getFeatureState(featureKey, !this.initialized);
     }
 
     getFeatures() {
